@@ -1,0 +1,48 @@
+scalar Date
+
+type Query {
+  users: [User!]!
+  user(id: ID!): User!
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): User!
+  updateUser(id: ID!, input: UpdateUserInput!): User!
+  removeUser(id: ID!): User!
+  login(username: String!, password: String!): User!
+}
+
+type Subscription {
+  userCreated: User!
+}
+
+type User {
+  id: ID!
+  first_name: String!
+  last_name: String!
+  username: String!
+  password: String!
+}
+
+type login {
+  token: String
+}
+
+input CreateUserInput {
+  first_name: String!
+  last_name: String!
+  username: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  first_name: String
+  last_name: String
+  username: String
+  password: String
+}
+
+input loginInput {
+  username: String!
+  password: String!
+}
