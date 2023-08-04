@@ -1,4 +1,5 @@
 import db from "../../db/index.js";
+import { BadRequestError } from "../../shared/errors/index.js";
 
 export const listUsers = async (query) => {
   const {
@@ -13,32 +14,35 @@ export const listUsers = async (query) => {
   const filters = {};
   filters.is_deleted = is_deleted;
 
-  const dbQuery = db("users").select(
-    "id",
-    "first_name",
-    "last_name",
-    "username"
-  );
+  try {
+    let dbQuery = db("users").select(
+      "id",
+      "first_name",
+      "last_name",
+      "username"
+    );
 
-  if (q) {
-    dbQuery
-      .andWhereILike("first_name", `%${q}%`)
-      .orWhereILike("last_name", `%${q}%`);
+    if (q) {
+      dbQuery = dbQuery
+        .andWhere("first_name", "ilike", `%${q}%`)
+        .orWhere("last_name", "ilike", `%${q}%`);
+    }
+
+    const total = await db("users").where(filters).count().first();
+    const totalCount = total ? parseInt(total.count) : 0;
+
+    dbQuery = dbQuery.orderBy(sort_by, sort_order).limit(limit).offset(offset);
+    const users = await dbQuery;
+
+    return {
+      users,
+      pageInfo: {
+        total: totalCount,
+        offset,
+        limit,
+      },
+    };
+  } catch (error) {
+    throw new BadRequestError("Error fetching users from the database.");
   }
-
-  const total = await dbQuery.clone().count().groupBy("id");
-
-  dbQuery.orderBy(sort_by, sort_order);
-  dbQuery.limit(limit).offset(offset);
-
-  const users = await dbQuery;
-
-  res.status(200).json({
-    users,
-    pageInfo: {
-      total: total.length,
-      offset,
-      limit,
-    },
-  });
 };

@@ -1,7 +1,5 @@
-scalar Date
-
 type Query {
-  users: [User!]!
+  users(input: UserFilterInput): UserList!
   user(id: ID!): User!
 }
 
@@ -9,7 +7,7 @@ type Mutation {
   createUser(input: CreateUserInput!): User!
   updateUser(id: ID!, input: UpdateUserInput!): User!
   removeUser(id: ID!): User!
-  login(username: String!, password: String!): User!
+  login(input: LoginInput!): LoginResponse!
 }
 
 type Subscription {
@@ -25,7 +23,27 @@ type User {
   is_deleted: Boolean!
 }
 
-type login {
+input UserFilterInput {
+  q: String
+  limit: Int
+  offset: Int
+  sort_by: String
+  sort_order: String
+  is_deleted: Boolean
+}
+
+type UserList {
+  users: [User!]!
+  pageInfo: PageInfo!
+}
+
+type PageInfo {
+  total: Int!
+  offset: Int!
+  limit: Int!
+}
+
+type LoginResponse {
   token: String
 }
 
@@ -43,7 +61,7 @@ input UpdateUserInput {
   password: String
 }
 
-input loginInput {
+input LoginInput {
   username: String!
   password: String!
 }
