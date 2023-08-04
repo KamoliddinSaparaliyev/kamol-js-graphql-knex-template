@@ -3,7 +3,7 @@ import bcryptjs from "bcryptjs";
 import { NotFoundError } from "../../shared/errors/index.js";
 
 export const editUser = async ({ id, ...changes }) => {
-  const user = await db("users").where({ id }).first();
+  const user = await db("users").where({ id, is_deleted: false }).first();
 
   if (!user) throw new NotFoundError("User not found");
 

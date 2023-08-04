@@ -6,14 +6,14 @@ export const seed = function (knex) {
     .then(function () {
       return knex("users").insert([
         {
-          id: 1,
+          // id: 1,
           first_name: "John",
           last_name: "Doe",
           username: "johndoe",
           password: bcryptjs.hashSync("password123", 10),
         },
         {
-          id: 2,
+          // id: 2,
           first_name: "Jane",
           last_name: "Smith",
           username: "janesmith",

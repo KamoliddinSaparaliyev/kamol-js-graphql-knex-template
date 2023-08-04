@@ -22,6 +22,7 @@ type User {
   last_name: String!
   username: String!
   password: String!
+  is_deleted: Boolean!
 }
 
 type login {
